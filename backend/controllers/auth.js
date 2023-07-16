@@ -1,5 +1,5 @@
 import express from 'express';
-import User from '../model/user'
+import User from '../model/user.js'
 import jwt from 'jsonwebtoken';
 const authcontroller = express.Router();
 
@@ -14,13 +14,13 @@ authcontroller.post("/signup", async(req,res)=> {
     const user = await User.signup(email,password)
 
     const token = createToken(user._id)
-    res.status(200).json(email, token)
+    res.status(200).json({email, token})
    } catch (error) {
     res.status(400).json({error: error.message})
    }
 })
 
-authcontroller.post("/login", async()=> {
+authcontroller.post("/login", async(req,res)=> {
     const {email, password}  = req.body;
 
    try {
@@ -28,7 +28,7 @@ authcontroller.post("/login", async()=> {
 
     const token = createToken(user._id)
 
-    res.status(200).json(email, token)
+    res.status(200).json({email, token})
    } catch (error) {
     res.status(400).json({error: error.message})
    }

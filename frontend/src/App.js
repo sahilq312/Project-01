@@ -1,12 +1,12 @@
-import './App.css';
-import Login from './components/Login';
+import "./App.css";
 
-function App() {
+
+function App(){
   return (
     <div className="App">
-      <Login/>
+      
     </div>
-  );
+    )
 }
 
 export default App;

@@ -14,28 +14,39 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.statics.signup = async function (email, password) {
-  const exist = await this.findOne({ email });
+  const exists = await this.findOne({ email })
 
-  if (exist) {
-    throw Error("User Already Exist");
+  if (exists) {
+    throw Error('Email already in use')
   }
-  const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(password, salt);
 
-  const user = await this.create({ email, password: hash });
+  const salt = await bcrypt.genSalt(10)
+  const hash = await bcrypt.hash(password, salt)
 
-  return user;
-};
-userSchema.statics.login = async function(email, passsword){
-    const user = await this.findOne({email});
+  const user = await this.create({ email, password: hash })
 
-    if(!user){
-        throw Error("Wrong email")
-    }
-    const match = bcrypt.compare(passsword, this.passsword)
-    if(!match){
-        throw Error('wrong pasword')
-    }
-    return user
+  return user
 }
-module.exports = mongoose.model('User', userSchema);
+
+// static login method
+userSchema.statics.login = async function(email, password) {
+
+  if (!email || !password) {
+    throw Error('All fields must be filled')
+  }
+
+  const user = await this.findOne({ email })
+  if (!user) {
+    throw Error('Incorrect email')
+  }
+
+  const match = await bcrypt.compare(password, user.password)
+  if (!match) {
+    throw Error('Incorrect password')
+  }
+
+  return user
+}
+const User = mongoose.model('User', userSchema);
+
+export default User;
